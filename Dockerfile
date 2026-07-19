@@ -20,6 +20,10 @@ WORKDIR /app
 # Copy the jar from builder
 COPY --from=builder /build/target/*.jar app.jar
 
+# Copy startup script
+COPY tutorialapi/start.sh .
+RUN chmod +x start.sh
+
 # Create non-root user for security
 RUN addgroup -S appuser && adduser -S appuser -G appuser
 USER appuser
@@ -36,5 +40,5 @@ ENV SPRING_PROFILES_ACTIVE=prod
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/health || exit 1
 
-# Run the application - simple and direct
-CMD ["sh", "-c", "java ${JAVA_OPTS} -Dserver.port=${PORT} -jar app.jar"]
+# Run the startup script
+CMD ["./start.sh"]
