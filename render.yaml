@@ -9,7 +9,7 @@ services:
         value: "8080"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: DATABASE_URL
+      - key: SPRING_DATASOURCE_URL
         fromDatabase:
           name: tutorialapi-db
           property: connectionString
@@ -17,6 +17,7 @@ services:
 databases:
   - name: tutorialapi-db
     ipAllowList: []
+
 
 
 
