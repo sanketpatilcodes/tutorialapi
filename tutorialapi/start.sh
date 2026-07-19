@@ -1,18 +1,24 @@
-# Start.sh script to handle Postgres URL conversion
 #!/bin/sh
 
 # Convert postgresql:// or postgres:// to jdbc:postgresql://
 if [ ! -z "$SPRING_DATASOURCE_URL" ]; then
     if echo "$SPRING_DATASOURCE_URL" | grep -q "^postgresql://"; then
-        export SPRING_DATASOURCE_URL="jdbc:postgresql://${SPRING_DATASOURCE_URL#postgresql://}"
+        SPRING_DATASOURCE_URL="jdbc:postgresql://${SPRING_DATASOURCE_URL#postgresql://}"
     elif echo "$SPRING_DATASOURCE_URL" | grep -q "^postgres://"; then
-        export SPRING_DATASOURCE_URL="jdbc:postgresql://${SPRING_DATASOURCE_URL#postgres://}"
+        SPRING_DATASOURCE_URL="jdbc:postgresql://${SPRING_DATASOURCE_URL#postgres://}"
     fi
+    echo "✓ Database URL configured"
+else
+    echo "⚠ No database URL provided"
 fi
 
-echo "Database URL: $SPRING_DATASOURCE_URL"
 echo "Port: $PORT"
+echo "Profile: $SPRING_PROFILES_ACTIVE"
 
-exec java ${JAVA_OPTS} -Dserver.port=${PORT} -jar app.jar
-
+# Pass database URL as system property
+exec java ${JAVA_OPTS} \
+  -Dserver.port=${PORT} \
+  -Dspring.datasource.url="$SPRING_DATASOURCE_URL" \
+  -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-prod} \
+  -jar app.jar
 
