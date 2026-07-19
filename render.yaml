@@ -13,10 +13,19 @@ services:
         fromDatabase:
           name: tutorialapi-db
           property: connectionString
+      - key: DATABASE_USER
+        fromDatabase:
+          name: tutorialapi-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: tutorialapi-db
+          property: password
 
 databases:
   - name: tutorialapi-db
     ipAllowList: []
+
 
 
 
