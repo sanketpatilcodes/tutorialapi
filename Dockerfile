@@ -20,13 +20,16 @@ WORKDIR /app
 # Copy the built JAR from builder stage
 COPY --from=builder /build/target/*.jar app.jar
 
+# Copy startup script
+COPY tutorialapi/start.sh .
+RUN chmod +x start.sh
+
 # Expose port
 EXPOSE 8080
 
 # Set environment variables
 ENV PORT=8080
 ENV SPRING_PROFILES_ACTIVE=prod
-ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
 
-# Run the application with verbose logging
-CMD exec java $JAVA_OPTS -Dserver.port=${PORT} -Dlogging.level.root=INFO -Dlogging.level.com.codeminton=DEBUG -jar app.jar
+# Run using the startup script
+CMD ["./start.sh"]
