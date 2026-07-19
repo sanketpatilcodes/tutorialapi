@@ -9,30 +9,15 @@ services:
         value: "8080"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: DB_HOST
+      - key: DATABASE_URL
         fromDatabase:
           name: tutorialapi-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: tutorialapi-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: tutorialapi-db
-          property: database
-      - key: DB_USER
-        fromDatabase:
-          name: tutorialapi-db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: tutorialapi-db
-          property: password
+          property: connectionString
 
 databases:
   - name: tutorialapi-db
     ipAllowList: []
+
 
 
 
