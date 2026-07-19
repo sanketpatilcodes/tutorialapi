@@ -5,9 +5,10 @@ services:
     plan: free
     region: oregon
     buildCommand: echo "Build handled by Dockerfile"
-    startCommand: java -Dserver.port=$PORT -jar app.jar
-    healthCheckPath: /api/tutorials
-    healthCheckInterval: 30
+    startCommand: java -jar app.jar
+    healthCheckPath: /swagger-ui.html
+    healthCheckInterval: 60
+    healthCheckTimeout: 30
     envVars:
       - key: PORT
         value: "8080"
@@ -37,4 +38,5 @@ services:
 databases:
   - name: tutorialapi-db
     ipAllowList: []
+
 
