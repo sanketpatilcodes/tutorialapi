@@ -1,11 +1,13 @@
 # Stage 1: Build
 FROM maven:3.9.2-eclipse-temurin-17 AS builder
 
-WORKDIR /app
+WORKDIR /build
 
-# Copy pom.xml and source code
-COPY tutorialapi/pom.xml .
-COPY tutorialapi/src ./src
+# Copy pom.xml
+COPY pom.xml .
+
+# Copy source code
+COPY src ./src
 
 # Build the application
 RUN mvn clean package -DskipTests
@@ -16,14 +18,15 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR from builder stage
-COPY --from=builder /app/target/tutorialapi-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder /build/target/*.jar app.jar
 
 # Expose port
-EXPOSE 8080
+EXPOSE $PORT
 
-# Set environment variables (Render will override these)
+# Set environment variables
 ENV PORT=8080
 ENV SPRING_PROFILES_ACTIVE=prod
+ENV SPRING_JAVAOPT="-Dserver.port=$PORT"
 
-# Run the application
-CMD ["java", "-jar", "app.jar"]
+# Run the application with proper port binding
+CMD ["java", "-Dserver.port=${PORT:-8080}", "-jar", "app.jar"]

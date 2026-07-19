@@ -3,26 +3,38 @@ services:
     name: tutorialapi
     runtime: docker
     plan: free
-    buildCommand: echo "Build step handled by Dockerfile"
-    startCommand: java -jar app.jar
+    region: oregon
+    buildCommand: echo "Build handled by Dockerfile"
+    startCommand: java -Dserver.port=$PORT -jar app.jar
+    healthCheckPath: /api/tutorials
+    healthCheckInterval: 30
     envVars:
+      - key: PORT
+        value: "8080"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: SPRING_DATASOURCE_URL
+      - key: DB_HOST
         fromDatabase:
           name: tutorialapi-db
-          property: connectionString
-      - key: SPRING_DATASOURCE_USERNAME
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: tutorialapi-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: tutorialapi-db
+          property: database
+      - key: DB_USER
         fromDatabase:
           name: tutorialapi-db
           property: user
-      - key: SPRING_DATASOURCE_PASSWORD
+      - key: DB_PASSWORD
         fromDatabase:
           name: tutorialapi-db
           property: password
-      - key: PORT
-        value: "8080"
 
 databases:
   - name: tutorialapi-db
     ipAllowList: []
+
