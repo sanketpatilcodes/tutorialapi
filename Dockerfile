@@ -20,10 +20,6 @@ WORKDIR /app
 # Copy the built JAR from builder stage
 COPY --from=builder /build/target/*.jar app.jar
 
-# Copy startup script
-COPY tutorialapi/start.sh .
-RUN chmod +x start.sh
-
 # Expose port
 EXPOSE 8080
 
@@ -31,5 +27,6 @@ EXPOSE 8080
 ENV PORT=8080
 ENV SPRING_PROFILES_ACTIVE=prod
 
-# Run using the startup script
-CMD ["./start.sh"]
+# Use shell form to properly expand environment variables
+ENTRYPOINT ["sh", "-c"]
+CMD ["exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dserver.port=${PORT:-8080} -jar app.jar"]
