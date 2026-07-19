@@ -4,10 +4,10 @@ FROM maven:3.9.2-eclipse-temurin-17 AS builder
 WORKDIR /build
 
 # Copy pom.xml
-COPY pom.xml .
+COPY tutorialapi/pom.xml .
 
 # Copy source code
-COPY src ./src
+COPY tutorialapi/src ./src
 
 # Build the application
 RUN mvn clean package -DskipTests
@@ -21,12 +21,11 @@ WORKDIR /app
 COPY --from=builder /build/target/*.jar app.jar
 
 # Expose port
-EXPOSE $PORT
+EXPOSE 8080
 
 # Set environment variables
 ENV PORT=8080
 ENV SPRING_PROFILES_ACTIVE=prod
-ENV SPRING_JAVAOPT="-Dserver.port=$PORT"
 
 # Run the application with proper port binding
 CMD ["java", "-Dserver.port=${PORT:-8080}", "-jar", "app.jar"]
