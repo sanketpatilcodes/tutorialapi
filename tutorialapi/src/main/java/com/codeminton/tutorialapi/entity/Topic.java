@@ -3,43 +3,38 @@ package com.codeminton.tutorialapi.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(
-        name = "topic_tutorials",
-        uniqueConstraints = @UniqueConstraint(name = "uk_topic_tutorials_slug", columnNames = "slug")
+        name = "topics",
+        uniqueConstraints = @UniqueConstraint(name = "uk_topics_slug", columnNames = "slug")
 )
-public class Tutorial {
+public class Topic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "topic_id", nullable = false)
-    private Topic topic;
+    @Column(nullable = false, length = 150)
+    private String name;
 
-    @Column(nullable = false, length = 200)
-    private String title;
-
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 150)
     private String slug;
 
     @Column(columnDefinition = "TEXT")
-    private String summary;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+    private String description;
 
     @Column(nullable = false)
     private Integer displayOrder = 0;
 
-    @Column(nullable = false)
-    private Boolean published = Boolean.TRUE;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tutorial> tutorials = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
@@ -52,7 +47,6 @@ public class Tutorial {
         updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -61,20 +55,12 @@ public class Tutorial {
         this.id = id;
     }
 
-    public Topic getTopic() {
-        return topic;
+    public String getName() {
+        return name;
     }
 
-    public void setTopic(Topic topic) {
-        this.topic = topic;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSlug() {
@@ -85,20 +71,12 @@ public class Tutorial {
         this.slug = slug;
     }
 
-    public String getSummary() {
-        return summary;
+    public String getDescription() {
+        return description;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getDisplayOrder() {
@@ -107,14 +85,6 @@ public class Tutorial {
 
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
-    }
-
-    public Boolean getPublished() {
-        return published;
-    }
-
-    public void setPublished(Boolean published) {
-        this.published = published;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -131,5 +101,13 @@ public class Tutorial {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Tutorial> getTutorials() {
+        return tutorials;
+    }
+
+    public void setTutorials(List<Tutorial> tutorials) {
+        this.tutorials = tutorials;
     }
 }

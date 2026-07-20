@@ -1,0 +1,18 @@
+package com.codeminton.tutorialapi.repository;
+
+import com.codeminton.tutorialapi.entity.Topic;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface TopicRepository extends JpaRepository<Topic, Long> {
+
+    List<Topic> findAllByOrderByDisplayOrderAscNameAsc();
+
+    Optional<Topic> findBySlug(String slug);
+
+    boolean existsBySlug(String slug);
+
+    boolean existsBySlugAndIdNot(String slug, Long id);
+}
